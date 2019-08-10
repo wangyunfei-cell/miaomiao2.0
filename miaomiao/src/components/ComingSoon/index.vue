@@ -1,5 +1,7 @@
 <template>
   <div class="movie_body">
+    <Loading v-if="isLoading" />
+    <Scroller v-else>
     <ul>
       <li v-for="topic in topics" :key="topic.nm">
         <div class="pic_show">
@@ -16,6 +18,7 @@
         <div class="btn_pre">预售</div>
       </li>
     </ul>
+    </Scroller>
   </div>
 </template>
 
@@ -26,16 +29,22 @@ export default {
   name: "ComingSoon",
   data() {
     return {
-      topics: []
+      topics: [],
+      isLoading:true,
+      prevCityId:-1
     };
   },
-  mounted() {
-    this.axios.get("/api/movieComingList?cityId=10").then((data) => {
+  activated() {
+    var cityId = this.$store.state.city.id
+    if(this.prevCityId===cityId){return;}
+    this.axios.get("/api/movieComingList?cityId="+ cityId).then((data) => {
       // handle success
       // console.log(data.data.data.comingList);
       var msg = data.data.msg;
       if (msg === "ok") {
         this.topics = data.data.data.comingList;
+        this.isLoading= false;
+        this.prevCityId = cityId
       }
     });
   }

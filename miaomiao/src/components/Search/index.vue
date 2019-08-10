@@ -9,7 +9,8 @@
     <div class="search_result">
       <h3>电影/电视剧/综艺</h3>
       <ul>
-        <li v-for="item in moviesList" :key="item.id">
+        <!-- <Loading v-if="isLoading" /> -->
+        <li  v-for="item in moviesList" :key="item.id">
           <div class="img">
             <img :src="item.img | setWH('128.180')" />
           </div>
@@ -34,7 +35,8 @@ export default {
   data() {
     return {
       message: "",
-      moviesList: []
+      moviesList: [],
+      isLoading:true
     };
   },
   methods: {
@@ -64,6 +66,7 @@ export default {
           var movies = data.data.data.movies;
           if (msg && movies) {
             this.moviesList = data.data.data.movies.list;
+            this.isLoading = false;
           }
         }).catch((err) => {
                 if (this.axios.isCancel(err)) {
